@@ -9,36 +9,91 @@ class QuoteApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Quote App',
-      home: HomePage(),
-    );
+      home: StatefullHomepage(),
+  );
   }
 }
+class StatefullHomepage extends StatefulWidget {
+  @override
+  _StatefullHomepageState createState() => _StatefullHomepageState();
+}
 
-class HomePage extends StatelessWidget {
+class _StatefullHomepageState extends State<StatefullHomepage> {
+  final _formkey = GlobalKey<FormState>();
+  String _inputquote;
+  String _inputauthor;
+  List<Quote> quotes=[];
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar : AppBar(
         title: Text('Quote'),
       ),
-      body: ListView(
-        children: [
-          BuildQuote('Fear ain\'t great thing we should do.','-jirayuwat1','https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.0-1/p160x160/31890355_2021595088099610_8172370960880500736_o.jpg?_nc_cat=100&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeHud3uhBAyPQMQ7vdtB1iYQEoIeT-bek6ESgh5P5t6ToeoUunnJH_0_KmaIjLj4mH3000iEuhk8PKagQY-6FZeJ&_nc_ohc=kBeua-Pk8UAAX-7hrqd&_nc_ht=scontent.fbkk5-5.fna&tp=6&oh=2b32ea64944e31d53514b31ac736a0ff&oe=6075D706'),
-          BuildQuote('Fear ain\'t great thing we should do.','-jirayuwat2','https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.0-1/p160x160/31890355_2021595088099610_8172370960880500736_o.jpg?_nc_cat=100&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeHud3uhBAyPQMQ7vdtB1iYQEoIeT-bek6ESgh5P5t6ToeoUunnJH_0_KmaIjLj4mH3000iEuhk8PKagQY-6FZeJ&_nc_ohc=kBeua-Pk8UAAX-7hrqd&_nc_ht=scontent.fbkk5-5.fna&tp=6&oh=2b32ea64944e31d53514b31ac736a0ff&oe=6075D706'),
-          BuildQuote('Fear ain\'t great thing we should do.','-jirayuwat3','https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.0-1/p160x160/31890355_2021595088099610_8172370960880500736_o.jpg?_nc_cat=100&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeHud3uhBAyPQMQ7vdtB1iYQEoIeT-bek6ESgh5P5t6ToeoUunnJH_0_KmaIjLj4mH3000iEuhk8PKagQY-6FZeJ&_nc_ohc=kBeua-Pk8UAAX-7hrqd&_nc_ht=scontent.fbkk5-5.fna&tp=6&oh=2b32ea64944e31d53514b31ac736a0ff&oe=6075D706'),
-          BuildQuote('Fear ain\'t great thing we should do.','-jirayuwat4','https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.0-1/p160x160/31890355_2021595088099610_8172370960880500736_o.jpg?_nc_cat=100&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeHud3uhBAyPQMQ7vdtB1iYQEoIeT-bek6ESgh5P5t6ToeoUunnJH_0_KmaIjLj4mH3000iEuhk8PKagQY-6FZeJ&_nc_ohc=kBeua-Pk8UAAX-7hrqd&_nc_ht=scontent.fbkk5-5.fna&tp=6&oh=2b32ea64944e31d53514b31ac736a0ff&oe=6075D706'),
-          BuildQuote('Fear ain\'t great thing we should do.','-jirayuwat5','https://scontent.fbkk5-5.fna.fbcdn.net/v/t1.0-1/p160x160/31890355_2021595088099610_8172370960880500736_o.jpg?_nc_cat=100&ccb=1-3&_nc_sid=7206a8&_nc_eui2=AeHud3uhBAyPQMQ7vdtB1iYQEoIeT-bek6ESgh5P5t6ToeoUunnJH_0_KmaIjLj4mH3000iEuhk8PKagQY-6FZeJ&_nc_ohc=kBeua-Pk8UAAX-7hrqd&_nc_ht=scontent.fbkk5-5.fna&tp=6&oh=2b32ea64944e31d53514b31ac736a0ff&oe=6075D706'),
+      body: Column(
+        children: <Widget>[
+          Form(
+            key: _formkey,
+            child: Column(
+              children: [
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Quote',
+                  ),
+                  onSaved: (String value){
+                    _inputquote = value;
+                    
+                  },
+                ),
+                TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Author',
+                  ),
+                  onSaved: (String value){
+                    _inputauthor = value;
+                  },
+                ),
+                RaisedButton(
+                  onPressed: (){
+                    _formkey.currentState.save();
+                    print("Quote :"+_inputquote +"\nAuthor :" +_inputauthor);
+                    if(_inputauthor != "" && _inputquote !="") setState(() {
+                      quotes.insert(0,Quote(_inputquote,_inputauthor));
+                    });
+                    _formkey.currentState.reset();
+                  },
+                  child: Text('Add')
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+                      child: quotes.length == 0? 
+              Center(
+                child :Text('empty')
+              ):
+              ListView.builder(
+                itemCount: quotes.length,
+                itemBuilder: (BuildContext context,int index){
+                  return BuildQuote(quotes[index].text,quotes[index].author);
+                },
+              ),
+          ),
         ],
-      ),
+      )
     );
   }
 }
 
+class Quote{
+  final String text;
+  final String author;
+  Quote(this.text,this.author);
+}
 class BuildQuote extends StatelessWidget {
   final String _author;
   final String _quote;
-  final String _picture;
-  const BuildQuote(this._quote,this._author,this._picture,{
+  const BuildQuote(this._quote,this._author,{
     Key key,
   }) : super(key: key);
 
@@ -50,17 +105,7 @@ class BuildQuote extends StatelessWidget {
       child: Column(
         children: [
             Container(
-              height: 200,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4),
-                image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: NetworkImage(this._picture),
-                ),
-              ),
-            ),
-            Container(
-              alignment: Alignment(-1, 0),
+              alignment: Alignment(0, 0),
               padding: const EdgeInsets.all(8.0),
               child: Text(
                 this._quote,
