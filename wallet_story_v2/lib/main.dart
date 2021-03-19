@@ -1,6 +1,19 @@
 import 'package:flutter/material.dart';
+import 'pages/login_page.dart';
+main(){
+  runApp(MyApp( ));
+}
 
-import 'package:wallet_story_v2/pages/vga.dart';
-void main( ){
-  runApp(myApp( ));
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title : 'wallet story V.2',
+      theme: ThemeData(
+        primarySwatch: Colors.green,
+      ),
+      home: LoginPage( ),
+    );
+  }
 }
