@@ -15,6 +15,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<String>month = ['ม.ค.','ก.พ.','มี.ค.','เม.ย.','พ.ค.','มิ.ย.','ก.ค.','ส.ค.','ก.ย.','ต.ค.','พ.ย.','ธ.ค.',];
   PageList menu = PageList();
   int nowMenu = 0;
   @override
@@ -225,7 +226,7 @@ class _HomePageState extends State<HomePage> {
                     Spacer( ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('21 มี.ค. 2021',textAlign: TextAlign.right,
+                      child: Text(DateTime.now( ).day.toString() + ' '+ month[DateTime.now( ).month-1]+ '  '+DateTime.now().year.toString(),textAlign: TextAlign.right,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,
@@ -398,7 +399,7 @@ class _HomePageState extends State<HomePage> {
                     Spacer( ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Text('มี.ค. 2021',textAlign: TextAlign.right,
+                      child: Text(month[DateTime.now().month-1] + ' '+DateTime.now().year.toString(),textAlign: TextAlign.right,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 15,

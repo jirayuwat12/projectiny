@@ -7,7 +7,7 @@ import 'package:wallet_story_v2/pages/info_page.dart';
 import 'package:wallet_story_v2/pages/home_page.dart';
 import 'package:wallet_story_v2/pages/menu_page.dart';
 import 'package:wallet_story_v2/models/listpage_summary_data.dart';
-
+import 'input_list_page.dart';
 
 class ListPage extends StatefulWidget {
   @override
@@ -39,7 +39,7 @@ class _ListPageState extends State<ListPage> {
                           size: 27,
                         ),
                         onPressed: ( ){
-                          dataListPageSummaryService.add(DataStruct('ได้รับเงินคืน',30.2,'คูชิหม่า','21 มี.ค. 2021 ','เงินสด'));
+                          dataListPageSummaryService.clear( );
                         },
                       ),
                       Text('รายการของฉัน',
@@ -158,6 +158,24 @@ class _ListPageState extends State<ListPage> {
           });
         },
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+      floatingActionButton: ButtonTheme(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+        child: FloatingActionButton.extended(
+          backgroundColor: Colors.green[400],
+          icon: Icon(Icons.add,color: Colors.white,),
+          onPressed: (){
+            Navigator.push(context,MaterialPageRoute(builder: (BuildContext context)=>InputListPage()));
+          },
+          label: Text('เพิ่มรายการ',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              color:Colors.white,
+              fontSize: 18,
+            ),
+          ),
+        ),
+      ),
     );
   }
   List<BottomNavigationBarItem> buildBottomNavigationBarItem() {
@@ -201,72 +219,128 @@ StreamBuilder buildbodyeachday(){
   );
 }
 
-List<Card> cardBuilder(List<DataStruct> data){
-  List<Card> result = [];
+List<Padding> cardBuilder(List<DataStruct> data){
+  List<Padding> result = [];
   data.forEach((element) {
-    result.add(Card(
-      elevation: 0,
-      child: Column(
-        children: [
-          Row(
-            children: [
-              element.icon,
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  element.category,
-                  Card(
-                    elevation: 0,
-                    color: (element.value.isNegative)?Colors.red[100]:Colors.green[100],
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
-                      child: Row(
-                        children: [
-                        (element.value.isNegative)?Icon(Icons.arrow_drop_up_rounded):Icon(Icons.arrow_drop_down_rounded),
-                        Text('${element.value} THB'),
-                        ],                       
+    result.add(Padding(
+      padding: const EdgeInsets.fromLTRB(8, 4, 8, 4),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        elevation: 5,
+        child: Column(
+          children: [
+            Row(
+              children: [
+                element.icon,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    element.category,
+                    Card(
+                      elevation: 0,
+                      color: (element.value.isNegative)?Colors.red[100]:Colors.green[100],
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 12, 0),
+                        child: Row(
+                          children: [
+                          (element.value.isNegative)?Icon(Icons.arrow_drop_down_rounded):Icon(Icons.arrow_drop_up_rounded),
+                          Text('${addKsimbal(element.value.toString())} THB'),
+                          ],                       
+                        ),
                       ),
-                    ),
-                  )
-                ],
-              ),
-              Spacer(),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ButtonTheme(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-                  child: RaisedButton(
-                    elevation: 0,
-                    color: Colors.amber[100],
-                    onPressed: (){
-
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
-                      child: Row(
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                            child: Icon(Icons.more_horiz,color: Colors.orange[600],),
-                          ),
-                          Text('เพิ่มเติม',
-                            style: TextStyle(
-                              color: Colors.orange[600],
-                              fontWeight: FontWeight.bold,
+                    )
+                  ],
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ButtonTheme(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+                    child: RaisedButton(
+                      elevation: 0,
+                      color: Colors.amber[100],
+                      onPressed: (){
+                        dataListPageSummaryService.delete(element);
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 8, 0, 8),
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                              child: Icon(Icons.more_horiz,color: Colors.orange[600],),
                             ),
-                          ),
-                        ],
+                            Text('เพิ่มเติม',
+                              style: TextStyle(
+                                color: Colors.orange[600],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ],
+              ],
+            ),
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 4),
+                  child: element.discribe,
+                )
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(8, 0, 0, 4),
+                  child: Text(element.str_category,
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                Spacer(),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 8, 4),
+                  child: Text('รายรับค้างรับ',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     ));
   });
   return result;
+}
+
+String addKsimbal(String input){
+  String result ="";
+  bool ispassdot = false;
+  int numdigitpass = 0;
+  for(int i = input.length-1; i>=0;i-=1){
+    if(input[i]=='-' && i==0) break;
+    if(ispassdot){
+      numdigitpass+=1;
+      if(numdigitpass == 4) {
+        numdigitpass=0;
+        i +=1;
+        result +=',';
+      }else result +=input[i];
+    }
+    else result += input[i];
+    if(input[i] == '.') ispassdot = true;
+  }
+  return result.split('').reversed.join();
 }
