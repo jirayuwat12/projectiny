@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'dart:ui';
+import 'package:rxdart/rxdart.dart';
 
 import 'package:wallet_story_v2/models/page_list.dart';
 import 'package:wallet_story_v2/pages/conclusion_page.dart';
 import 'package:wallet_story_v2/pages/info_page.dart';
 import 'package:wallet_story_v2/pages/list_page.dart';
 import 'package:wallet_story_v2/pages/menu_page.dart';
+import 'package:wallet_story_v2/models/data_info.dart';
+import 'package:wallet_story_v2/models/listpage_summary_data.dart';
 
 
 class HomePage extends StatefulWidget {
@@ -132,27 +135,199 @@ class _HomePageState extends State<HomePage> {
                       ),
                       color: Colors.blueGrey[900],
                     ),
-                    Card(
-                      elevation: 0,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(13, 2, 13, 4),
-                        child: Text('9 รายการ',
-                          style: TextStyle(                              
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold
+                    StreamBuilder(
+                      stream: dataListPageSummaryService.stream,
+                      builder: (context, snapshot) {
+                        return Card(
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(32)),
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(13, 2, 13, 4),
+                            child: Text(dataListPageSummaryService.current.length.toString()+' รายการ',
+                              style: TextStyle(                              
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      color: Colors.lightGreen[600],
+                          color: Colors.lightGreen[600],
+                        );
+                      }
                     ),
                   ],
                 ),
-                buildfirstRow(Icon(Icons.money_rounded,size: 30,),'เงินสด',400),
-                buildfirstRow(Icon(Icons.credit_card_rounded,size: 30,),'บัญชีธนาคาร',1503),
-                buildfirstRow(Icon(Icons.shopping_bag_rounded,size: 30,),'รายรับค้างรับ',320),
-                buildfirstRow(Icon(Icons.shopping_bag_rounded,size: 30,),'หนี้สิน',1000),
-                buildfirstRow(Icon(Icons.credit_card_rounded,size: 30,),'บัตรเครดิต',1234),
+                StreamBuilder(
+                  stream: walletService.stream,
+                  builder: (context, snapshot) {
+                    return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Icon(Icons.money_rounded),
+                              ),
+                              Text('เงินสด',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer( ),
+                              Text(walletService.current.cash.toString() + ' THB',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: ButtonTheme(
+                                  height: 30,
+                                  minWidth: 0,
+                                  child: RaisedButton(
+                                    elevation: 0,
+                                    color: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    onPressed: (){
+                                      
+                                    },
+                                    child: Icon(Icons.edit_outlined,color: Colors.white,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                  }
+                ),
+                StreamBuilder(
+                  stream: walletService.stream,
+                  builder: (context, snapshot) {
+                    return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Icon(Icons.credit_card),
+                              ),
+                              Text('บัญชีธนาคาร',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer( ),
+                              Text(walletService.current.sum_account.toString() + ' THB',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: ButtonTheme(
+                                  height: 30,
+                                  minWidth: 0,
+                                  child: RaisedButton(
+                                    elevation: 0,
+                                    color: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    onPressed: (){
+                                      
+                                    },
+                                    child: Icon(Icons.edit_outlined,color: Colors.white,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                  }
+                ),
+                StreamBuilder(
+                  stream: walletService.stream,
+                  builder: (context, snapshot) {
+                    return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Icon(Icons.money_rounded),
+                              ),
+                              Text('รายรับค้างรับ',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer( ),
+                              Text(walletService.current.sum_loan.toString() + ' THB',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: ButtonTheme(
+                                  height: 30,
+                                  minWidth: 0,
+                                  child: RaisedButton(
+                                    elevation: 0,
+                                    color: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    onPressed: (){
+
+                                    },
+                                    child: Icon(Icons.edit_outlined,color: Colors.white,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                  }
+                ),
+                StreamBuilder(
+                  stream: walletService.stream,
+                  builder: (context, snapshot) {
+                    return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: Icon(Icons.money_rounded),
+                              ),
+                              Text('หนี้สิน',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Spacer( ),
+                              Text(walletService.current.sum_debt.toString() + ' THB',
+                                style: TextStyle(
+                                  color: Colors.grey[700],
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
+                                child: ButtonTheme(
+                                  height: 30,
+                                  minWidth: 0,
+                                  child: RaisedButton(
+                                    elevation: 0,
+                                    color: Colors.grey,
+                                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                                    onPressed: (){
+                  
+                                    },
+                                    child: Icon(Icons.edit_outlined,color: Colors.white,),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          );
+                  }
+                ),
               ],
             ),
           ),
@@ -561,47 +736,7 @@ class _HomePageState extends State<HomePage> {
       ),
   );
   }
-
-  Row buildfirstRow(Icon firstIcon,String name,int value) {
-    return Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                child: firstIcon,
-              ),
-              Text(name,
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Spacer( ),
-              Text(value.toString() + ' THB',
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(8, 0, 8, 0),
-                child: ButtonTheme(
-                  height: 30,
-                  minWidth: 0,
-                  child: RaisedButton(
-                    elevation: 0,
-                    color: Colors.grey,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                    onPressed: (){
-
-                    },
-                    child: Icon(Icons.edit_outlined,color: Colors.white,),
-                  ),
-                ),
-              ),
-            ],
-          );
-  }
+    
 
   List<BottomNavigationBarItem> buildBottomNavigationBarItem() {
     List<BottomNavigationBarItem> ans = [];

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:wallet_story_v2/models/listpage_summary_data.dart';
+import 'package:wallet_story_v2/models/data_info.dart';
 
 
 class InputListPage extends StatefulWidget {
@@ -350,7 +351,12 @@ class _InputListPageState extends State<InputListPage> {
               error = "จำเป็นต้องกำหนดจำนวน";
             });
           }
-          dataListPageSummaryService.add(DataStruct(isIncome?'รายรับ':'รายจ่าย',(isIncome?1:-1) * double.parse(value.text),textdescribe.text, dateTime, 'เงินสด'));
+          dataListPageSummaryService.add(DataStruct(isIncome?'รายรับ':'รายจ่าย',(isIncome?1:-1) * double.parse(value.text),textdescribe.text==""?"no describe":textdescribe.text, dateTime, 'เงินสด'));
+          if(isIncome){
+            walletService.deposit_cash(double.parse(value.text));
+          }else{
+            walletService.withdraw_cash(double.parse(value.text));
+          }
           Navigator.pop(context);
         },
         backgroundColor: Colors.green[400],

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wallet_story_v2/models/data_info.dart';
 import 'dart:core';
 
 import 'package:wallet_story_v2/models/page_list.dart';
@@ -261,6 +262,8 @@ List<Padding> cardBuilder(List<DataStruct> data){
                       elevation: 0,
                       color: Colors.amber[100],
                       onPressed: (){
+                        if(element.category == 'รายรับ') walletService.deposit_cash(element.value);
+                        else walletService.withdraw_cash(element.value);
                         dataListPageSummaryService.delete(element);
                       },
                       child: Padding(
